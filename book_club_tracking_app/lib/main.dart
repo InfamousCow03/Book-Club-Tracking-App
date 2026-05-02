@@ -28,16 +28,25 @@ class AppColors {
   static const border =Color(0xFF3A2C22);
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BookScaffold extends StatelessWidget {
+  final Widget body;
+  final int currentIndex;
+  final String title;
+  final String description;
+
+
+  const BookScaffold({
+    super.key,
+    required this.body,
+    required this.currentIndex,
+    this.title = "book Talk",
+    this.description = "stupid ahh book club",
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: AppColors.background,
-
-
+    return Scaffold(
+      backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.background,
 
@@ -47,7 +56,7 @@ class MyApp extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Book Talk",
+                  title,
                   style: GoogleFonts.lora(
                     color: AppColors.foreground,
                     fontSize: 30,
@@ -55,7 +64,7 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "stupid ahh bookclub",
+                  description,
                   style: GoogleFonts.inter(
                     color: AppColors.mutedForeground,
                     fontSize: 15,
@@ -68,9 +77,6 @@ class MyApp extends StatelessWidget {
           bottom: PreferredSize(preferredSize: const Size.fromHeight(12), child: Container(height: 1, color: AppColors.border,))
         ),
 
-
-
-
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             border: Border(
@@ -81,9 +87,22 @@ class MyApp extends StatelessWidget {
           child : BottomNavigationBar(
             
             backgroundColor: AppColors.background,
-            currentIndex: 1,
+            currentIndex: currentIndex,
             selectedItemColor: AppColors.primary,
             unselectedItemColor: AppColors.mutedForeground,
+            onTap: (index) {
+              switch(index){
+                case 0:
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MemberPage()));
+                  break;
+                case 1:
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LibraryPage()));
+                  break;
+                case 2:
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MeetingPage()));
+                  break;
+              }
+            },
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.people_outlined),
@@ -99,7 +118,72 @@ class MyApp extends StatelessWidget {
                 ),
             ]
           ),
-        )
+        ),
+
+        body: body,
+    );
+  }
+}
+
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: LibraryPage(),
+    );
+  }
+}
+
+
+class MeetingPage extends StatelessWidget {
+  const MeetingPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BookScaffold(
+      currentIndex: 2,
+      title: "Members",
+      description: "stupid ahh members",
+      body: const Center(
+        child: Text("Members Page"),
+      )
+    );
+  }
+}
+
+class LibraryPage extends StatelessWidget {
+  const LibraryPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BookScaffold(
+      currentIndex: 1,
+      body: const Center(
+        child: Text("Library Page"),
+      )
+    );
+  }
+}
+
+class MemberPage extends StatelessWidget {
+  const MemberPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BookScaffold(
+      currentIndex: 0,
+      title: "Members",
+      description: "stupid ahh members",
+      body: const Center(
+        child: Text("Meetings Page"),
       )
     );
   }
