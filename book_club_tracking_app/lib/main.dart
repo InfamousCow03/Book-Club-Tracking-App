@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://iuxahzvrlatmmlaxafxy.supabase.co/rest/v1/',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1eGFoenZybGF0bW1sYXhhZnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDM0MTAsImV4cCI6MjA5MzU3OTQxMH0.D4R32yo-OsZtTMPH4tIgcitUHrr5mFb94cGsiJwXeKs',
+  );
+
   runApp(const MyApp());
 }
 
@@ -150,8 +158,8 @@ class MeetingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BookScaffold(
       currentIndex: 2,
-      title: "Members",
-      description: "stupid ahh members",
+      title: "Meetings",
+      description: "stupid ahh meetings",
       body: const Center(
         child: Text("Members Page"),
       )
@@ -169,6 +177,7 @@ class LibraryPage extends StatelessWidget {
       body: const Center(
         child: Text("Library Page"),
       )
+    
     );
   }
 }
