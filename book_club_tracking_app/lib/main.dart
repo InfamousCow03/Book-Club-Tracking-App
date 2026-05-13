@@ -6,7 +6,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    url: 'https://iuxahzvrlatmmlaxafxy.supabase.co/rest/v1/',
+    url: 'https://iuxahzvrlatmmlaxafxy.supabase.co',
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1eGFoenZybGF0bW1sYXhhZnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDM0MTAsImV4cCI6MjA5MzU3OTQxMH0.D4R32yo-OsZtTMPH4tIgcitUHrr5mFb94cGsiJwXeKs',
   );
 
@@ -18,7 +18,9 @@ class AppColors {
   static const background =Color(0xFF1B1410);
   static const card =Color(0xFF241B16);
   static const secondary =Color(0xFF2E2218);
-  static const muted =Color(0xFF2A1F18);
+  static const muted =Color.fromARGB(255, 48, 36, 28);
+  static const book = Color(0xFF405C4E);
+  static const bookspine = Color.fromARGB(255, 53, 77, 64);
 
   // Text / Foregrounds
   static const foreground =Color(0xFFF1E5CF);
@@ -47,7 +49,7 @@ class BookScaffold extends StatelessWidget {
     super.key,
     required this.body,
     required this.currentIndex,
-    this.title = "book Talk",
+    this.title = "Book Talk",
     this.description = "stupid ahh book club",
   });
 
@@ -167,17 +169,246 @@ class MeetingPage extends StatelessWidget {
   }
 }
 
-class LibraryPage extends StatelessWidget {
+class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
+
+  @override
+  State<LibraryPage> createState() => _LibraryPageState();
+}
+
+class _LibraryPageState extends State<LibraryPage> {
+  int selectedTab = 0;
+
+  Future<Map<String, dynamic>> fetchBook() async {
+    final response = await Supabase.instance.client
+        .from('Books')
+        .select()
+        .eq('id', 1).single();
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
     return BookScaffold(
       currentIndex: 1,
-      body: const Center(
-        child: Text("Library Page"),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB( 12, 6, 12, 6),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            //currently reading container
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.muted,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => setState(() => selectedTab = 0),
+                    child: Container(
+                      height: 30,
+                      width: 125,
+                      decoration: BoxDecoration(
+                        color: AppColors.card,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        'Reading',
+                        style: GoogleFonts.lora(
+                          color: AppColors.mutedForeground,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        )
+                      )
+
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => setState(() => selectedTab = 1),
+                    child: Container(
+                      height: 30,
+                      width: 125,
+                      decoration: BoxDecoration(
+                        color: AppColors.card,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        'Read',
+                        style: GoogleFonts.lora(
+                          color: AppColors.mutedForeground,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        )
+                      )
+
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => setState(() => selectedTab = 2),
+                    child: Container(
+                      height: 30,
+                      width: 125,
+                      decoration: BoxDecoration(
+                        color: AppColors.card,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        'Want To Read',
+                        style: GoogleFonts.inter(
+                          color: AppColors.mutedForeground,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        )
+                      )
+
+                    ),
+                  ),
+                  
+                ],
+              )
+            ),
+
+            //book info container
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB( 3, 6, 3, 6),
+              decoration: BoxDecoration(
+                color: AppColors.muted,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.border),
+              ),
+
+
+              child : FutureBuilder(
+                future: fetchBook(),
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    return Row(
+                      children: [
+                        const SizedBox(width: 12),
+                        Container(
+                          height: 150,
+                          width: 10,
+                          decoration: BoxDecoration(
+                            color: AppColors.book,
+                            borderRadius: BorderRadius.only(topLeft: Radius.circular(2), bottomLeft: Radius.circular(2)),
+                            border : Border(right: BorderSide(color: AppColors.bookspine, width: 2)),
+                            //border: Border.all(color: AppColors.border),
+                          ),
+                        ),
+                        Container(
+                          height: 150,
+                          width: 90,
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppColors.book,
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
+                            //border: Border.all(color: AppColors.border),
+                          ),
+
+                          child: Column(
+                            children:[
+                              Text(
+                                snapshot.data!['title'],
+                                style: GoogleFonts.lora(
+                                  color: AppColors.foreground,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                )
+                              ),
+                              Text(
+                                snapshot.data!['author'],
+                                style: GoogleFonts.lora(
+                                  color: AppColors.foreground,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                )
+                              ),
+                            ]
+                          )
+                        ),
+
+                        const SizedBox(width: 12),
+                        Container(
+                          height: 175,
+                          width: 255,
+                          padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
+                          decoration: BoxDecoration(
+                            color: AppColors.muted,
+                            borderRadius: BorderRadius.all(Radius.circular(6))
+                            
+                          ),
+
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:[
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                child: Text(
+                                  snapshot.data!['title'],
+                                  style: GoogleFonts.lora(
+                                    color: AppColors.foreground,
+                                    fontSize: 45,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                child : Text(
+                                  snapshot.data!['author'],
+                                  style: GoogleFonts.inter(
+                                    color: AppColors.mutedForeground,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 30, 0, 1),
+                                child: Text(
+                                  '----------------------------------',
+                                  style: GoogleFonts.inter(
+                                    color: AppColors.mutedForeground,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 5, 0, 1),
+                                child: Text(
+                                  'Page 0 of ${snapshot.data!['pages']}                                0%',
+                                  style: GoogleFonts.inter(
+                                    color: AppColors.mutedForeground,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                                ),
+                              ),
+                            ]
+                          )
+                        )
+                      ],
+                    );
+                  }
+                  if(snapshot.hasError) {
+                    return Text(snapshot.error.toString());
+                  }
+                  return const CircularProgressIndicator();
+                }
+              )
+            ),
+          ],
+        ),
       )
-    
     );
   }
 }
