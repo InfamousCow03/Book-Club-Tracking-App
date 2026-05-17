@@ -1,42 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'Meeting.dart';
+import 'Member.dart';
+import 'util.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await Supabase.initialize(
-    url: 'https://iuxahzvrlatmmlaxafxy.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1eGFoenZybGF0bW1sYXhhZnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDM0MTAsImV4cCI6MjA5MzU3OTQxMH0.D4R32yo-OsZtTMPH4tIgcitUHrr5mFb94cGsiJwXeKs',
-  );
-
-  runApp(const MyApp());
-}
-
-class AppColors {
-  // Backgrounds
-  static const background =Color(0xFF1B1410);
-  static const card =Color(0xFF241B16);
-  static const secondary =Color(0xFF2E2218);
-  static const muted =Color.fromARGB(255, 48, 36, 28);
-  static const book = Color(0xFF405C4E);
-  static const bookspine = Color.fromARGB(255, 53, 77, 64);
-
-  // Text / Foregrounds
-  static const foreground =Color(0xFFF1E5CF);
-  static const primaryForeground =Color(0xFF1B1410);
-  static const secondaryFg =Color(0xFFE8DBC2);
-  static const mutedForeground =Color(0xFF9A8773);
-  static const accentForeground =Color(0xFFF1E5CF);
-
-  // Accents / Actions
-  static const primary =Color(0xFFD6A85F); // gold
-  static const accent =Color(0xFFA45D3F);
-  static const destructive =Color(0xFFC75A47);
-
-  // Border
-  static const border =Color(0xFF3A2C22);
-}
 
 class BookScaffold extends StatelessWidget {
   final Widget body;
@@ -129,12 +97,20 @@ class BookScaffold extends StatelessWidget {
             ]
           ),
         ),
-
         body: body,
     );
   }
 }
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
+  await Supabase.initialize(
+    url: 'https://iuxahzvrlatmmlaxafxy.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1eGFoenZybGF0bW1sYXhhZnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDM0MTAsImV4cCI6MjA5MzU3OTQxMH0.D4R32yo-OsZtTMPH4tIgcitUHrr5mFb94cGsiJwXeKs',
+  );
+
+  runApp(const MyApp());
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -153,18 +129,157 @@ class _MyAppState extends State<MyApp> {
 }
 
 
-class MeetingPage extends StatelessWidget {
-  const MeetingPage({super.key});
 
-  @override
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * This is the Library page
+ */
+class BookContainer extends StatelessWidget {
+  final String title;
+  final String author;
+  final int pages;
+  final int status;
+  final int selectedTab;
+
+  const BookContainer({
+    super.key,
+    required this.title,
+    required this.author,
+    required this.pages,
+    required this.status,
+    required this.selectedTab,
+  });
+
   Widget build(BuildContext context) {
-    return BookScaffold(
-      currentIndex: 2,
-      title: "Meetings",
-      description: "stupid ahh meetings",
-      body: const Center(
-        child: Text("Members Page"),
-      )
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB( 3, 6, 3, 6),
+      decoration: BoxDecoration(
+        color: AppColors.muted,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.border),
+      ),
+
+      child: Row(
+        children: [
+          const SizedBox(width: 12),
+          Container(
+            height: 150,
+            width: 10,
+            decoration: BoxDecoration(
+              color: AppColors.book,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(2), bottomLeft: Radius.circular(2)),
+              border : Border(right: BorderSide(color: AppColors.bookspine, width: 2)),
+              //border: Border.all(color: AppColors.border),
+            ),
+          ),
+          Container(
+            height: 150,
+            width: 90,
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: AppColors.book,
+              borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
+              //border: Border.all(color: AppColors.border),
+            ),
+
+            child: Column(
+              children:[
+                Text(
+                  title,
+                  style: GoogleFonts.lora(
+                    color: AppColors.foreground,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )
+                ),
+                Text(
+                  author,
+                  style: GoogleFonts.lora(
+                    color: AppColors.foreground,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  )
+                ),
+              ]
+            )
+          ),
+
+          const SizedBox(width: 12),
+          Container(
+            height: 175,
+            width: 255,
+            padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
+            decoration: BoxDecoration(
+              color: AppColors.muted,
+              borderRadius: BorderRadius.all(Radius.circular(6))
+              
+            ),
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: Text(
+                    title,
+                    style: GoogleFonts.lora(
+                      color: AppColors.foreground,
+                      fontSize: 45,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child : Text(
+                    author,
+                    style: GoogleFonts.inter(
+                      color: AppColors.mutedForeground,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 30, 0, 1),
+                  child: Text(
+                    '----------------------------------',
+                    style: GoogleFonts.inter(
+                      color: AppColors.mutedForeground,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 5, 0, 1),
+                  child: Text(
+                    selectedTab == 2 ?'Page $pages of $pages                     100%' : 'Page 0 of $pages                            0%',
+                    style: GoogleFonts.inter(
+                      color: AppColors.mutedForeground,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    )
+                  ),
+                ),
+              ]
+            )
+          )
+        ],
+      ),
     );
   }
 }
@@ -178,14 +293,6 @@ class LibraryPage extends StatefulWidget {
 
 class _LibraryPageState extends State<LibraryPage> {
   int selectedTab = 0;
-
-  Future<Map<String, dynamic>> fetchBook() async {
-    final response = await Supabase.instance.client
-        .from('Books')
-        .select()
-        .eq('id', 1).single();
-    return response;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +309,7 @@ class _LibraryPageState extends State<LibraryPage> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: AppColors.muted,
                 borderRadius: BorderRadius.circular(10),
@@ -214,14 +322,15 @@ class _LibraryPageState extends State<LibraryPage> {
                     child: Container(
                       height: 30,
                       width: 125,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: AppColors.card,
+                        color: selectedTab == 0 ? AppColors.background : AppColors.muted,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         'Reading',
                         style: GoogleFonts.lora(
-                          color: AppColors.mutedForeground,
+                          color: selectedTab == 0 ? AppColors.primary : AppColors.mutedForeground,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         )
@@ -234,14 +343,15 @@ class _LibraryPageState extends State<LibraryPage> {
                     child: Container(
                       height: 30,
                       width: 125,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: AppColors.card,
+                        color: selectedTab == 1 ? AppColors.background : AppColors.muted,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         'Read',
                         style: GoogleFonts.lora(
-                          color: AppColors.mutedForeground,
+                          color: selectedTab == 1 ? AppColors.primary : AppColors.mutedForeground,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         )
@@ -254,14 +364,15 @@ class _LibraryPageState extends State<LibraryPage> {
                     child: Container(
                       height: 30,
                       width: 125,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: AppColors.card,
+                        color: selectedTab == 2 ? AppColors.background : AppColors.muted,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         'Want To Read',
                         style: GoogleFonts.inter(
-                          color: AppColors.mutedForeground,
+                          color: selectedTab == 2 ? AppColors.primary : AppColors.mutedForeground,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         )
@@ -275,137 +386,35 @@ class _LibraryPageState extends State<LibraryPage> {
             ),
 
             //book info container
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB( 3, 6, 3, 6),
-              decoration: BoxDecoration(
-                color: AppColors.muted,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.border),
-              ),
-
-
-              child : FutureBuilder(
-                future: fetchBook(),
-                builder: (context, snapshot){
-                  if(snapshot.hasData){
-                    return Row(
+            const SizedBox(height: 12),
+            FutureBuilder(
+              future: fetchBook(selectedTab + 1),
+              builder: (context, snapshot){
+                if(snapshot.hasData){
+                  return Column(
+                    children: snapshot.data!.map((book) => Column(
                       children: [
-                        const SizedBox(width: 12),
-                        Container(
-                          height: 150,
-                          width: 10,
-                          decoration: BoxDecoration(
-                            color: AppColors.book,
-                            borderRadius: BorderRadius.only(topLeft: Radius.circular(2), bottomLeft: Radius.circular(2)),
-                            border : Border(right: BorderSide(color: AppColors.bookspine, width: 2)),
-                            //border: Border.all(color: AppColors.border),
-                          ),
+                        BookContainer(
+                          title: book['title'],
+                          author: book['author'],
+                          pages: book['pages'],
+                          status: book['status'],
+                          selectedTab: (selectedTab + 1),
                         ),
-                        Container(
-                          height: 150,
-                          width: 90,
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: AppColors.book,
-                            borderRadius: BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
-                            //border: Border.all(color: AppColors.border),
-                          ),
-
-                          child: Column(
-                            children:[
-                              Text(
-                                snapshot.data!['title'],
-                                style: GoogleFonts.lora(
-                                  color: AppColors.foreground,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                )
-                              ),
-                              Text(
-                                snapshot.data!['author'],
-                                style: GoogleFonts.lora(
-                                  color: AppColors.foreground,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                )
-                              ),
-                            ]
-                          )
-                        ),
-
-                        const SizedBox(width: 12),
-                        Container(
-                          height: 175,
-                          width: 255,
-                          padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
-                          decoration: BoxDecoration(
-                            color: AppColors.muted,
-                            borderRadius: BorderRadius.all(Radius.circular(6))
-                            
-                          ),
-
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children:[
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                child: Text(
-                                  snapshot.data!['title'],
-                                  style: GoogleFonts.lora(
-                                    color: AppColors.foreground,
-                                    fontSize: 45,
-                                    fontWeight: FontWeight.bold,
-                                  )
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                child : Text(
-                                  snapshot.data!['author'],
-                                  style: GoogleFonts.inter(
-                                    color: AppColors.mutedForeground,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0, 30, 0, 1),
-                                child: Text(
-                                  '----------------------------------',
-                                  style: GoogleFonts.inter(
-                                    color: AppColors.mutedForeground,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0, 5, 0, 1),
-                                child: Text(
-                                  'Page 0 of ${snapshot.data!['pages']}                                0%',
-                                  style: GoogleFonts.inter(
-                                    color: AppColors.mutedForeground,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  )
-                                ),
-                              ),
-                            ]
-                          )
-                        )
+                        const SizedBox(height: 12),
                       ],
-                    );
-                  }
-                  if(snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  }
-                  return const CircularProgressIndicator();
+                    ),
+                    
+                    ).toList(),
+
+                  );
                 }
-              )
-            ),
+                if(snapshot.hasError){
+                  return Text(snapshot.error.toString());
+                }
+                  return const CircularProgressIndicator();
+              }
+            )
           ],
         ),
       )
@@ -413,18 +422,3 @@ class _LibraryPageState extends State<LibraryPage> {
   }
 }
 
-class MemberPage extends StatelessWidget {
-  const MemberPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BookScaffold(
-      currentIndex: 0,
-      title: "Members",
-      description: "stupid ahh members",
-      body: const Center(
-        child: Text("Meetings Page"),
-      )
-    );
-  }
-}
